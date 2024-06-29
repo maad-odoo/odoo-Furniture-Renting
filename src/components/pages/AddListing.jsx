@@ -13,7 +13,7 @@ const AddListing = () => {
     name: "",
     description: "",
     price: "",
-    category: "",
+    category: "",  // Initial value set to empty string
     material: "",
     color: "",
     availability: "",
@@ -48,7 +48,7 @@ const AddListing = () => {
       name: "",
       description: "",
       price: "",
-      category: "",
+      category: "",  // Reset to empty string
       material: "",
       color: "",
       availability: "",
@@ -111,15 +111,18 @@ const AddListing = () => {
             <label className="block text-amber-800 mb-2" htmlFor="category">
               Category
             </label>
-            <input
-              type="text"
+            <select
               id="category"
               name="category"
               value={formData.category}
               onChange={handleChange}
               className="w-full px-4 py-2 bg-white text-amber-800 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-800"
               required
-            />
+            >
+              <option value="">Select Category</option>
+              <option value="wood">Wood</option>
+              <option value="steel">Steel</option>
+            </select>
           </div>
           <div className="mb-4">
             <label className="block text-amber-800 mb-2" htmlFor="material">
