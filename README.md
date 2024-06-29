@@ -1,8 +1,40 @@
-# React + Vite
+# Furniture Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the Furniture Web Application! This platform allows users to explore, buy, and sell furniture with ease.
 
-Currently, two official plugins are available:
+## Core Functionalities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Login
+![Login](Image/Login.png)
+
+### Registration
+![Registration](Image/registration.png)
+
+### View and Buy Furniture
+Users can see details of the furniture and make purchases.
+![Furniture Details](Image/Home.png)
+![Single Furniture Details](Image/buy1.png)
+![Buy Furniture](Image/buy2.png)
+
+### List Your Furniture
+Users can list their furniture for sale.
+![List Furniture](Image/Addlisting.png)
+![List Furniture](Image/Addlisting2.png)
+
+
+
+### Search and Filter Functionality
+Users can search for furniture and apply filters to find what they need.
+![Search and Filter](Image/sEACRCHFILTER.png)
+
+### Logout
+### Responsive Desig
+
+## Tech Stack
+
+- **React**: Frontend library for building user interfaces.
+- **Firebase**: Backend services including authentication and Firestore.
+- **Tailwind**: For UI and UX.
+- **Stripe**: Payment processing integration.
+
+
