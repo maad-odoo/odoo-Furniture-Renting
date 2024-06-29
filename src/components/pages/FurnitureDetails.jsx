@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFireBase } from '../../context/FireBase';
+import axios from 'axios';
+
 
 const FurnitureDetails = () => {
     const { id } = useParams();
@@ -9,6 +11,17 @@ const FurnitureDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+    const buyFunction = async () => {
+        try {
+          const response = await axios.post('http://localhost:3000/payment');
+          if (response.status === 200) {
+            window.location.href = response.data.url;
+          }
+        } catch (error) {
+          console.error('Error processing payment:', error);
+        }
+      };
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -52,8 +65,8 @@ const FurnitureDetails = () => {
                 <p className="text-amber-800 mb-2">Description: {itemData.description}</p>
 
                 <div className="flex justify-center">
-                    <button className="bg-amber-800 text-amber-200 px-4 py-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-800">
-                        Buy Now
+                    <button className="bg-amber-800 text-amber-200 px-4 py-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-800" onClick={buyFunction}>
+                         Buy Now
                     </button>
                 </div>
             </div>
