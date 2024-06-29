@@ -1,32 +1,37 @@
-// pages/Home.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FurnitureCard from '../Card/FurnitureCard';
-
-const furnitureData = [
-    {
-        id: 1,
-        name: "Modern Sofa",
-        description: "A comfortable and stylish modern sofa with a sleek design.",
-        price: 499.99,
-        category: "Living Room",
-        dimensions: {
-            width: "80 inches",
-            height: "35 inches",
-            depth: "38 inches"
-        },
-        material: "Fabric",
-        color: "Gray",
-        image: "https://mysleepyhead.com/media/catalog/product/4/t/4thaug_2ndhalf5934_green.jpg",
-        availability: "In Stock"
-    },
-    // ... other furniture items
-];
+import { getDocs, collection } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 const Home = () => {
+    const [productData, setProductData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const querySnapshot = await getDocs(collection(db, 'Products'));
+                const Data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setProductData(Data);
+            } catch (error) {
+                console.error("Error fetching listings: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="min-h-screen bg-white p-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {furnitureData.map(furniture => (
+                {productData?.map(furniture => (
                     <FurnitureCard key={furniture.id} furniture={furniture} />
                 ))}
             </div>

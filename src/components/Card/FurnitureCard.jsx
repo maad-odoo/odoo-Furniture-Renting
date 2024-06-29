@@ -3,9 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const FurnitureCard = ({ furniture }) => {
+    
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
-            <img src={furniture.image} alt={furniture.name} className="w-full h-48 object-cover" />
+            <img src={furniture?.images} alt={furniture.name} className="w-full h-48 object-cover" />
             <div className="p-4">
                 <h3 className="text-xl font-bold text-amber-800">{furniture.name}</h3>
                 <p className="text-amber-600">${furniture.price}</p>

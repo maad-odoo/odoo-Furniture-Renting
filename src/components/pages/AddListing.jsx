@@ -1,55 +1,75 @@
 import React, { useState } from "react";
+import { db, storage } from '../../lib/firebase'; // adjust the path if necessary
+import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 
 const AddListing = () => {
 
 
-  const [avatar, setAvatar] = useState({
+  const [photo, setPhoto] = useState({
     file: null,
     url: "",
   });
-  
-  const [loading ,setLoading ]=useState(false);
-  const handelAvatar = (e) => {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "",
+    material: "",
+    color: "",
+    availability: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handlePhoto = (e) => {
     if (e.target.files[0]) {
-      setAvatar({
+      setPhoto({
         file: e.target.files[0],
         url: URL.createObjectURL(e.target.files[0]),
       });
     }
   };
-  const handleRegistration = async(e)=>{
-    e.preventDefault()
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const uploadImage = async (file) => {
+    const storageRef = ref(storage, `images/${uuidv4()}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    return url;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    const formData=new FormData(e.target);
-    const {username,email, password}=Object.fromEntries(formData);
+    
     try {
-      const res =await  createUserWithEmailAndPassword(auth,email,password);
+      const imgUrl = photo.file ? await uploadImage(photo.file) : "";
       
-      const imgUrl = await uploads(avatar.file)
-      
-      
-      await setDoc(doc(db,"users",res.user.uid),{
-       username,
-       email,
-       avatar:imgUrl,
-       id:res.user.uid,
-       blocked:[] , 
+      await setDoc(doc(db, "Products", uuidv4()), {
+        ...formData,
+        images: imgUrl,
       });
-
-      await setDoc(doc(db,"userchats",res.user.uid),{
-        chats:[],
-      });
-
-      toast.success("Account created Sucessfully, You can login now!!");
+      
+     // toast.success("Listing added successfully!");
     } catch (err) {
-      toast.error(err.message);
-    }finally{
+     // toast.error(err.message);
+      console.error(err);
+    } finally {
       setLoading(false);
     }
   };
 
 
-  
+
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
@@ -143,14 +163,16 @@ const AddListing = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="file">
-              <img src={avatar.url || "./avatar.png"} alt="" />
+              <img src={photo.url } alt="" 
+              required
+              />
               Upload your image
             </label>
             <input
               type="file"
               id="file"
               style={{ display: "none" }}
-              onChange={handelAvatar}
+              onChange={handlePhoto}
             />
           </div>
           <div className="mb-4">
