@@ -38,10 +38,7 @@ export const FireBaseProvider = (props) => {
   }, []);
 
   // Registration
-  const handleRegistration = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const { email, password } = Object.fromEntries(formData);
+  const handleRegistration = async (email,password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, "users", res.user.uid), {
@@ -55,10 +52,7 @@ export const FireBaseProvider = (props) => {
   };
 
   // Login
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const { email, password } = Object.fromEntries(formData);
+  const handleLogin = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("You are logged in");

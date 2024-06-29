@@ -63,7 +63,7 @@ const AddListing = () => {
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="max-w-lg w-full bg-amber-200 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-amber-800 mb-6">
-          Add a New Furniture Listing
+          Add a New Furniture 
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

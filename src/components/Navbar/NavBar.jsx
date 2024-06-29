@@ -48,7 +48,7 @@ const Navbar = () => {
                 to="/add-listing"
                 className="block mt-4 lg:inline-block lg:mt-0 text-amber-200 hover:text-white"
               >
-                Add Listing
+                Add Product
               </Link>
               <button
                 onClick={fireBase.handleLogout}
