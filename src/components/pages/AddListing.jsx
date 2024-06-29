@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { db, storage } from '../../lib/firebase'; // adjust the path if necessary
-import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
+import { useFireBase } from "../../context/FireBase";
 
 const AddListing = () => {
-
+  const fireBase = useFireBase();
 
   const [photo, setPhoto] = useState({
     file: null,
@@ -40,36 +37,27 @@ const AddListing = () => {
     });
   };
 
-  const uploadImage = async (file) => {
-    const storageRef = ref(storage, `images/${uuidv4()}`);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    return url;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    try {
-      const imgUrl = photo.file ? await uploadImage(photo.file) : "";
-      
-      await setDoc(doc(db, "Products", uuidv4()), {
-        ...formData,
-        images: imgUrl,
-      });
-      
-     // toast.success("Listing added successfully!");
-    } catch (err) {
-     // toast.error(err.message);
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    await fireBase.addListing(formData, photo);
+    setLoading(false);
+
+    // Clear the form
+    setFormData({
+      name: "",
+      description: "",
+      price: "",
+      category: "",
+      material: "",
+      color: "",
+      availability: "",
+    });
+    setPhoto({
+      file: null,
+      url: "",
+    });
   };
-
-
-
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
@@ -163,9 +151,9 @@ const AddListing = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="file">
-              <img src={photo.url } alt="" 
-              required
-              />
+              {photo.url && (
+                <img src={photo.url} alt="Preview" className="mb-4" />
+              )}
               Upload your image
             </label>
             <input
@@ -189,22 +177,13 @@ const AddListing = () => {
               required
             />
           </div>
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-amber-800 text-amber-200 px-4 py-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-800"
-            >
-              Add Product
-            </button>
-          </div>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => (window.location.href = "/registration")}
-              className="text-amber-800 px-4 py-2 rounded-md hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-800"
-            >
-              Not a user? Register here
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-amber-800 text-white py-2 px-4 rounded-md hover:bg-amber-900 transition duration-300"
+            disabled={loading}
+          >
+            {loading ? "Uploading..." : "Add Listing"}
+          </button>
         </form>
       </div>
     </div>

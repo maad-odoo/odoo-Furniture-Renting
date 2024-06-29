@@ -1,9 +1,11 @@
+// pages/Home.js
 import React, { useState, useEffect } from 'react';
 import FurnitureCard from '../Card/FurnitureCard';
-import { getDocs, collection } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { useFireBase } from '../../context/FireBase';
+
 
 const Home = () => {
+    const { getAllProducts } = useFireBase();
     const [productData, setProductData] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -11,8 +13,7 @@ const Home = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const querySnapshot = await getDocs(collection(db, 'Products'));
-                const Data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const Data = await getAllProducts();
                 setProductData(Data);
             } catch (error) {
                 console.error("Error fetching listings: ", error);
@@ -22,7 +23,7 @@ const Home = () => {
         };
 
         fetchData();
-    }, []);
+    }, [getAllProducts]);
 
     if (loading) {
         return <div>Loading...</div>;

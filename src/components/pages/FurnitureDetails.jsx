@@ -1,46 +1,36 @@
 // pages/FurnitureDetails.js
-import { useState ,useEffect } from 'react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { collection, query, where, getDoc } from "firebase/firestore";
-import { doc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
-
+import { useFireBase } from '../../context/FireBase';
 
 const FurnitureDetails = () => {
-
     const { id } = useParams();
-    console.log(id);
+    const { getProductById } = useFireBase();
     const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-  
+
     useEffect(() => {
-      const fetchData = async () => {
-        try {
-            const docRef = doc(db, "Products", id);
-            const docSnap = await getDoc(docRef);
-        
-            if (docSnap.exists()) {
-              setItemData(docSnap.data());
-              setLoading(false)
-              return { id: docSnap.id, ...docSnap.data() };
-            } else {
-              console.log('No such document!');
+        const fetchData = async () => {
+            try {
+                const data = await getProductById(id);
+                setItemData(data);
+                setLoading(false);
+            } catch (error) {
+                setError(error.message);
+                setLoading(false);
             }
-          } catch (error) {
-            console.error('Error fetching document:', error);
-          }
-        
-      };
-  
-      fetchData();
-    }, [id]);
+        };
+        fetchData();
+    }, [id, getProductById]);
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-white flex items-center justify-center">
@@ -49,7 +39,7 @@ const FurnitureDetails = () => {
                 <h2 className="text-2xl font-bold text-amber-800 mb-4">{itemData.name}</h2>
                 <p className="text-amber-800 mb-2">Price: ${itemData.price}</p>
                 <p className="text-amber-800 mb-2">Category: {itemData.category}</p>
-                <p className="text-amber-800 mb-2">Dimensions: {itemData.dimensions} </p>
+                <p className="text-amber-800 mb-2">Dimensions: {itemData.dimensions}</p>
                 <p className="text-amber-800 mb-2">Material: {itemData.material}</p>
                 <p className="text-amber-800 mb-2">Color: {itemData.color}</p>
                 <p className="text-amber-800 mb-2">Availability: {itemData.availability}</p>
